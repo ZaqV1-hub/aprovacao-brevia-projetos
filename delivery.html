@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Brevia | Confirmacao de entrega</title>
+<title>Brevia | Confirmação de entrega</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -25,7 +25,7 @@
 
   <sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex; align-items:center; justify-content:center; min-height:60vh; color:oklch(0.5 0.015 85); font-size:15px; text-align:center; padding:24px;">
-      Entrega nao encontrada. Verifique o link recebido.
+      Entrega não encontrada. Verifique o link recebido.
     </div>
   </sc-if>
 
@@ -39,7 +39,7 @@
             <div style="font-family:Georgia, serif; font-size:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ clientName }}</div>
           </div>
         </div>
-        <div style="font-size:20px; color:oklch(0.75 0.01 85); flex-shrink:0;">x</div>
+        <div style="font-size:20px; color:oklch(0.75 0.01 85); flex-shrink:0;">×</div>
         <div style="display:flex; align-items:center; gap:16px; flex-direction:row-reverse; text-align:right; flex-shrink:0;">
           <image-slot id="brevia-logo" src="assets/brevia-logo.png" style="width:52px; height:52px; flex-shrink:0;" shape="rounded" radius="12" fit="contain" placeholder="Logo Brevia"></image-slot>
           <div>
@@ -50,7 +50,7 @@
       </div>
 
       <div style="margin-bottom:44px;">
-        <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Confirmacao de Entrega</div>
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Confirmação de Entrega</div>
         <h1 style="font-family:Georgia, serif; font-weight:400; font-size:38px; line-height:1.2; margin:0 0 16px;">{{ projectTitle }}</h1>
         <sc-if value="{{ description }}" hint-placeholder-val="{{ false }}">
           <p style="font-size:15px; line-height:1.6; color:oklch(0.42 0.015 85); margin:0 0 24px; max-width:640px;">{{ description }}</p>
@@ -75,7 +75,7 @@
         <div style="display:flex; flex-direction:column; gap:10px;">
           <sc-for list="{{ scopeItems }}" as="item" hint-placeholder-count="4">
             <div style="display:flex; gap:12px; align-items:flex-start; padding:14px 16px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:10px;">
-              <div style="width:18px; height:18px; border-radius:50%; background:oklch(0.94 0.03 190); color:oklch(0.4 0.1 190); font-size:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">ok</div>
+              <div style="width:18px; height:18px; border-radius:50%; background:oklch(0.94 0.03 190); color:oklch(0.4 0.1 190); font-size:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">✓</div>
               <div style="font-size:15px; line-height:1.55;">{{ item }}</div>
             </div>
           </sc-for>
@@ -83,7 +83,7 @@
       </section>
 
       <section style="margin-bottom:40px;">
-        <h2 style="font-family:Georgia, serif; font-weight:400; font-size:19px; margin:0 0 14px;">Garantia e observacoes</h2>
+        <h2 style="font-family:Georgia, serif; font-weight:400; font-size:19px; margin:0 0 14px;">Garantia e observações</h2>
         <div style="padding:20px; background:oklch(0.965 0.008 85); border-radius:10px; font-size:14px; line-height:1.65; color:oklch(0.38 0.015 85);">{{ guaranteeText }}</div>
       </section>
 
@@ -91,8 +91,8 @@
         <sc-if value="{{ isPending }}" hint-placeholder-val="{{ true }}">
           <sc-if value="{{ showForm }}" hint-placeholder-val="{{ false }}">
             <div style="animation:bv-fade-in 0.2s ease;">
-              <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:6px;">Registrar aprovacao</div>
-              <div style="font-size:13px; color:oklch(0.75 0.01 260); margin-bottom:20px;">Confirme quem esta aprovando esta entrega em nome de {{ clientName }}.</div>
+              <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:6px;">Registrar aprovação</div>
+              <div style="font-size:13px; color:oklch(0.75 0.01 260); margin-bottom:20px;">Confirme quem está aprovando esta entrega em nome de {{ clientName }}.</div>
               <form onSubmit="{{ onSubmit }}" style="display:flex; flex-direction:column; gap:12px;">
                 <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.78 0.01 260);">
                   Nome de quem aprova *
@@ -103,8 +103,8 @@
                   <input type="text" value="{{ role }}" onChange="{{ onRoleChange }}" placeholder="Ex: Diretora Financeira" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif;" />
                 </label>
                 <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.78 0.01 260);">
-                  Comentario (opcional)
-                  <textarea value="{{ comment }}" onChange="{{ onCommentChange }}" placeholder="Alguma observacao sobre a aprovacao" rows="2" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif; resize:vertical;"></textarea>
+                  Comentário (opcional)
+                  <textarea value="{{ comment }}" onChange="{{ onCommentChange }}" placeholder="Alguma observação sobre a aprovação" rows="2" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif; resize:vertical;"></textarea>
                 </label>
                 <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
                   <div style="font-size:12px; color:oklch(0.75 0.18 25);">{{ error }}</div>
@@ -119,8 +119,8 @@
           <sc-if value="{{ !showForm }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
               <div>
-                <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:6px;">Aguardando aprovacao</div>
-                <div style="font-size:13px; color:oklch(0.75 0.01 260); max-width:420px; line-height:1.5;">Ao aprovar, voce confirma o recebimento e conformidade do que esta descrito nesta pagina.</div>
+                <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:6px;">Aguardando aprovação</div>
+                <div style="font-size:13px; color:oklch(0.75 0.01 260); max-width:420px; line-height:1.5;">Ao aprovar, você confirma o recebimento e conformidade do que está descrito nesta página.</div>
               </div>
               <button onClick="{{ onOpenForm }}" style="padding:13px 22px; border-radius:9px; border:none; background:oklch(0.96 0.005 260); color:oklch(0.19 0.012 260); font-size:15px; font-weight:600; cursor:pointer; white-space:nowrap;">Aprovar entrega</button>
             </div>
@@ -129,10 +129,10 @@
 
         <sc-if value="{{ isApproved }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex; gap:16px; align-items:flex-start; animation:bv-fade-in 0.2s ease;">
-            <div style="width:36px; height:36px; border-radius:50%; background:oklch(0.6 0.14 160); color:oklch(0.19 0.012 260); font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">ok</div>
+            <div style="width:36px; height:36px; border-radius:50%; background:oklch(0.6 0.14 160); color:oklch(0.19 0.012 260); font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✓</div>
             <div>
               <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:4px;">Entrega aprovada</div>
-              <div style="font-size:14px; color:oklch(0.85 0.005 260); margin-bottom:2px;">{{ approvedBy }}<sc-if value="{{ approverRole }}" hint-placeholder-val="{{ false }}"> - {{ approverRole }}</sc-if></div>
+              <div style="font-size:14px; color:oklch(0.85 0.005 260); margin-bottom:2px;">{{ approvedBy }}<sc-if value="{{ approverRole }}" hint-placeholder-val="{{ false }}"> · {{ approverRole }}</sc-if></div>
               <div style="font-size:13px; color:oklch(0.68 0.01 260);">em {{ approvedAtFormatted }}</div>
               <sc-if value="{{ approverComment }}" hint-placeholder-val="{{ false }}">
                 <div style="margin-top:12px; padding:12px 14px; background:oklch(0.24 0.012 260); border-radius:8px; font-size:13px; line-height:1.5; color:oklch(0.85 0.005 260);">"{{ approverComment }}"</div>
@@ -184,7 +184,7 @@ class Component extends DCLogic {
   submitApproval = async (e) => {
     e.preventDefault();
     if (!this.state.name.trim()) {
-      this.setState({ error: "Informe o nome de quem esta aprovando." });
+      this.setState({ error: "Informe o nome de quem está aprovando." });
       return;
     }
     this.setState({ submitting: true, error: null });
@@ -196,7 +196,7 @@ class Component extends DCLogic {
       });
       this.setState({ delivery: updated, showForm: false, submitting: false, name: "", role: "", comment: "" });
     } catch (err) {
-      this.setState({ error: "Nao foi possivel registrar a aprovacao. Tente novamente.", submitting: false });
+      this.setState({ error: "Não foi possível registrar a aprovação. Tente novamente.", submitting: false });
     }
   };
 
@@ -205,13 +205,13 @@ class Component extends DCLogic {
     const d = new Date(iso);
     const datePart = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(d);
     const timePart = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" }).format(d);
-    return `${datePart} as ${timePart}`;
+    return `${datePart} às ${timePart}`;
   }
 
   buildStats(d) {
     const stats = [];
     if (d.deadline) stats.push({ label: "Prazo de entrega", value: d.deadline });
-    if (d.effortHours) stats.push({ label: "Esforco estimado", value: d.effortHours, sub: d.hourlyRate ? `${d.hourlyRate} / hora tecnica` : "" });
+    if (d.effortHours) stats.push({ label: "Esforço estimado", value: d.effortHours, sub: d.hourlyRate ? `${d.hourlyRate} / hora técnica` : "" });
     if (d.totalValue) stats.push({ label: "Investimento total", value: d.totalValue, sub: d.paymentTerms || "" });
     return stats;
   }
@@ -243,7 +243,7 @@ class Component extends DCLogic {
       role,
       comment,
       submitting,
-      submitLabel: submitting ? "Registrando..." : "Confirmar aprovacao",
+      submitLabel: submitting ? "Registrando..." : "Confirmar aprovação",
       error,
       onOpenForm: this.openForm,
       onCloseForm: this.closeForm,

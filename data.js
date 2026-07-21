@@ -3,25 +3,25 @@
 const _mockDb = {
   "clube-rincao-migracao-2026": {
     id: "clube-rincao-migracao-2026",
-    clientName: "Clube Rincao",
+    clientName: "Clube Rincão",
     clientLogoUrl: "assets/cluberincao.png",
-    projectTitle: "Migracao de Sistemas",
+    projectTitle: "Migração de Sistemas",
     description:
-      "Conforme a proposta tecnica e comercial apresentada, a Brevia concluiu a migracao completa dos sistemas do Clube Rincao para o novo ambiente de hospedagem. Este documento formaliza a entrega para validacao junto ao Wagner, responsavel pela conferencia final do projeto.",
+      "Conforme a proposta técnica e comercial apresentada, a Brevia concluiu a migração completa dos sistemas do Clube Rincão para o novo ambiente de hospedagem. Este documento formaliza a entrega para validação junto ao Wagner, responsável pela conferência final do projeto.",
     scopeItems: [
-      "Migracao de todos os sistemas do Clube Rincao: sites, APIs de ingressos, apps de validacao, e-commerce escolar e reservas gratuitas.",
-      "Migracao dos bancos de dados dos sites e do sistema de Buffet, com as conexoes devidamente ajustadas no novo ambiente.",
-      "Configuracao completa do novo ambiente de hospedagem na Locaweb, incluindo integracoes de e-mail, WhatsApp, pagamentos e QR Code.",
-      "Testes tecnicos realizados e validacao dos sistemas principais em funcionamento.",
-      "Visita tecnica de Isaque ao Clube Rincao para ajuste presencial do banco de dados dos computadores, ja apontando para o novo servidor."
+      "Migração de todos os sistemas do Clube Rincão: sites, APIs de ingressos, apps de validação, e-commerce escolar e reservas gratuitas.",
+      "Migração dos bancos de dados dos sites e do sistema de Buffet, com as conexões devidamente ajustadas no novo ambiente.",
+      "Configuração completa do novo ambiente de hospedagem na Locaweb, incluindo integrações de e-mail, WhatsApp, pagamentos e QR Code.",
+      "Testes técnicos realizados e validação dos sistemas principais em funcionamento.",
+      "Visita técnica de Isaque ao Clube Rincão para ajuste presencial do banco de dados dos computadores, já apontando para o novo servidor."
     ],
     guaranteeText:
-      "A Brevia garante que, apos a migracao, nao ocorrerao quedas do site, indisponibilidades ou bugs decorrentes de sistemas nao devidamente conectados ao novo ambiente. Qualquer instabilidade relacionada a migracao sera corrigida sem custo adicional para o Clube Rincao.",
-    deadline: "21/07 as 18h",
+      "A Brevia garante que, após a migração, não ocorrerão quedas do site, indisponibilidades ou bugs decorrentes de sistemas não devidamente conectados ao novo ambiente. Qualquer instabilidade relacionada à migração será corrigida sem custo adicional para o Clube Rincão.",
+    deadline: "21/07 às 18h",
     effortHours: "40h",
     hourlyRate: "R$ 180",
     totalValue: "R$ 7.200,00",
-    paymentTerms: "50% na aprovacao · 50% na entrega",
+    paymentTerms: "50% na aprovação · 50% na entrega",
     status: "pending",
     approvedBy: null,
     approverRole: null,
@@ -52,7 +52,7 @@ export async function getApprovalStatus(id) {
 
 export async function approveDelivery(id, { name, role, comment }) {
   const d = _mockDb[id];
-  if (!d) throw new Error("Entrega nao encontrada: " + id);
+  if (!d) throw new Error("Entrega não encontrada: " + id);
   d.status = "approved";
   d.approvedBy = name;
   d.approverRole = role || null;
