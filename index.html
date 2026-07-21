@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brevia | Entregas de projetos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>body { margin: 0; }</style>
+</helmet>
+
+<div style="min-height:100vh; background:oklch(0.98 0.006 85); font-family:Helvetica, Arial, sans-serif; color:oklch(0.22 0.015 85);">
+  <div style="height:6px; width:100%; background:linear-gradient(90deg, oklch(0.72 0.13 195), oklch(0.64 0.17 250), oklch(0.6 0.19 300), oklch(0.72 0.19 345), oklch(0.63 0.21 25));"></div>
+
+  <div style="max-width:760px; margin:0 auto; padding:64px 24px 96px;">
+    <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Brevia</div>
+    <h1 style="font-family:Georgia, serif; font-weight:400; font-size:34px; margin:0 0 40px;">Entregas de projetos</h1>
+
+    <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
+      <div style="color:oklch(0.55 0.015 85); font-size:14px;">Carregando…</div>
+    </sc-if>
+
+    <sc-if value="{{ !loading }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <sc-for list="{{ deliveries }}" as="d" hint-placeholder-count="2">
+          <a href="{{ d.href }}" style="display:flex; align-items:center; justify-content:space-between; gap:20px; padding:20px 22px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:12px; text-decoration:none; color:inherit;" style-hover="border-color:oklch(0.75 0.01 85);">
+            <div style="min-width:0;">
+              <div style="font-size:12px; color:oklch(0.55 0.015 85); margin-bottom:4px;">{{ d.clientName }}</div>
+              <div style="font-family:Georgia, serif; font-size:18px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ d.projectTitle }}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:14px; flex-shrink:0;">
+              <span style="font-size:12px; padding:6px 12px; border-radius:999px; background:{{ d.badgeBg }}; color:{{ d.badgeColor }}; white-space:nowrap;">{{ d.badgeLabel }}</span>
+              <span style="color:oklch(0.7 0.01 85); font-size:16px;">→</span>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { loading: true, deliveries: [] };
+
+  async componentDidMount() {
+    const { listDeliveries } = await import("./data.js");
+    const list = await listDeliveries();
+    this.setState({ loading: false, deliveries: list });
+  }
+
+  renderVals() {
+    return {
+      loading: this.state.loading,
+      deliveries: this.state.deliveries.map((d) => ({
+        clientName: d.clientName,
+        projectTitle: d.projectTitle,
+        href: `delivery.html?id=${encodeURIComponent(d.id)}`,
+        badgeLabel: d.status === "approved" ? "Aprovado" : "Pendente",
+        badgeBg: d.status === "approved" ? "oklch(0.92 0.05 160)" : "oklch(0.94 0.03 60)",
+        badgeColor: d.status === "approved" ? "oklch(0.4 0.1 160)" : "oklch(0.42 0.1 60)"
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>
