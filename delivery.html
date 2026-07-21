@@ -19,164 +19,130 @@
 <div style="min-height:100vh; background:oklch(0.98 0.006 85); font-family:Helvetica, Arial, sans-serif; color:oklch(0.22 0.015 85);">
   <div style="height:6px; width:100%; background:linear-gradient(90deg, oklch(0.72 0.13 195), oklch(0.64 0.17 250), oklch(0.6 0.19 300), oklch(0.72 0.19 345), oklch(0.63 0.21 25));"></div>
 
-  <sc-if value="{{ !authChecked }}" hint-placeholder-val="{{ true }}">
-    <div style="max-width:420px; margin:0 auto; padding:120px 24px; text-align:center; color:oklch(0.55 0.015 85); font-size:14px;">Carregando...</div>
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex; align-items:center; justify-content:center; min-height:60vh; color:oklch(0.55 0.015 85); font-size:14px;">Carregando entrega...</div>
   </sc-if>
 
-  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
-    <div style="max-width:420px; margin:0 auto; padding:72px 24px 96px;">
-      <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Brevia</div>
-      <h1 style="font-family:Georgia, serif; font-weight:400; font-size:34px; margin:0 0 14px;">Acesso restrito</h1>
-      <p style="font-size:15px; line-height:1.6; color:oklch(0.42 0.015 85); margin:0 0 28px;">Entre com o login da Brevia para abrir esta entrega.</p>
-      <form onSubmit="{{ onLoginSubmit }}" style="display:flex; flex-direction:column; gap:12px; padding:24px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:16px;">
-        <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.52 0.015 85);">
-          Login
-          <input type="text" value="{{ username }}" onChange="{{ onUsernameChange }}" placeholder="Digite o login" style="padding:12px 14px; border-radius:10px; border:1px solid oklch(0.88 0.008 85); background:#fff; color:inherit; font-size:14px; font-family:Helvetica, Arial, sans-serif;" />
-        </label>
-        <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.52 0.015 85);">
-          Senha
-          <input type="password" value="{{ password }}" onChange="{{ onPasswordChange }}" placeholder="Digite a senha" style="padding:12px 14px; border-radius:10px; border:1px solid oklch(0.88 0.008 85); background:#fff; color:inherit; font-size:14px; font-family:Helvetica, Arial, sans-serif;" />
-        </label>
-        <sc-if value="{{ authError }}" hint-placeholder-val="{{ false }}">
-          <div style="font-size:12px; color:oklch(0.58 0.18 28);">{{ authError }}</div>
-        </sc-if>
-        <button type="submit" style="padding:13px 18px; border-radius:10px; border:none; background:oklch(0.19 0.012 260); color:#fff; font-size:14px; font-weight:600; cursor:pointer;">Entrar</button>
-      </form>
+  <sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; align-items:center; justify-content:center; min-height:60vh; color:oklch(0.5 0.015 85); font-size:15px; text-align:center; padding:24px;">
+      Entrega nao encontrada. Verifique o link recebido.
     </div>
   </sc-if>
 
-  <sc-if value="{{ showPage }}" hint-placeholder-val="{{ false }}">
-    <div style="max-width:760px; margin:0 auto; padding:24px 24px 96px;">
-      <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:20px;">
-        <button onClick="{{ onLogout }}" style="padding:10px 16px; border-radius:999px; border:1px solid oklch(0.88 0.008 85); background:#fff; color:oklch(0.4 0.015 85); font-size:13px; cursor:pointer;">Sair</button>
+  <sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width:760px; margin:0 auto; padding:64px 24px 96px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:48px;">
+        <div style="display:flex; align-items:center; gap:16px; min-width:0;">
+          <image-slot id="client-logo" src="{{ clientLogoUrl }}" style="width:60px; height:60px; flex-shrink:0;" shape="rounded" radius="12" fit="contain" placeholder="Logo cliente"></image-slot>
+          <div style="min-width:0;">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:oklch(0.55 0.015 85); margin-bottom:4px;">Cliente</div>
+            <div style="font-family:Georgia, serif; font-size:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ clientName }}</div>
+          </div>
+        </div>
+        <div style="font-size:20px; color:oklch(0.75 0.01 85); flex-shrink:0;">x</div>
+        <div style="display:flex; align-items:center; gap:16px; flex-direction:row-reverse; text-align:right; flex-shrink:0;">
+          <image-slot id="brevia-logo" src="assets/brevia-logo.png" style="width:52px; height:52px; flex-shrink:0;" shape="rounded" radius="12" fit="contain" placeholder="Logo Brevia"></image-slot>
+          <div>
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:oklch(0.55 0.015 85); margin-bottom:4px;">Entregue por</div>
+            <div style="font-family:Georgia, serif; font-size:19px;">Brevia</div>
+          </div>
+        </div>
       </div>
 
-      <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex; align-items:center; justify-content:center; min-height:60vh; color:oklch(0.55 0.015 85); font-size:14px;">Carregando entrega...</div>
-      </sc-if>
-
-      <sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex; align-items:center; justify-content:center; min-height:60vh; color:oklch(0.5 0.015 85); font-size:15px; text-align:center; padding:24px;">
-          Entrega nao encontrada. Verifique o link recebido.
-        </div>
-      </sc-if>
-
-      <sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
-        <div>
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:48px;">
-            <div style="display:flex; align-items:center; gap:16px; min-width:0;">
-              <image-slot id="client-logo" src="{{ clientLogoUrl }}" style="width:60px; height:60px; flex-shrink:0;" shape="rounded" radius="12" fit="contain" placeholder="Logo cliente"></image-slot>
-              <div style="min-width:0;">
-                <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:oklch(0.55 0.015 85); margin-bottom:4px;">Cliente</div>
-                <div style="font-family:Georgia, serif; font-size:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ clientName }}</div>
+      <div style="margin-bottom:44px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Confirmacao de Entrega</div>
+        <h1 style="font-family:Georgia, serif; font-weight:400; font-size:38px; line-height:1.2; margin:0 0 16px;">{{ projectTitle }}</h1>
+        <sc-if value="{{ description }}" hint-placeholder-val="{{ false }}">
+          <p style="font-size:15px; line-height:1.6; color:oklch(0.42 0.015 85); margin:0 0 24px; max-width:640px;">{{ description }}</p>
+        </sc-if>
+        <sc-if value="{{ hasStats }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-wrap:wrap; gap:12px;">
+            <sc-for list="{{ statItems }}" as="stat" hint-placeholder-count="3">
+              <div style="flex:1; min-width:140px; padding:14px 16px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:10px;">
+                <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:oklch(0.55 0.015 85); margin-bottom:6px;">{{ stat.label }}</div>
+                <div style="font-family:Georgia, serif; font-size:18px;">{{ stat.value }}</div>
+                <sc-if value="{{ stat.sub }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px; color:oklch(0.55 0.015 85); margin-top:2px;">{{ stat.sub }}</div>
+                </sc-if>
               </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+      <section style="margin-bottom:32px;">
+        <h2 style="font-family:Georgia, serif; font-weight:400; font-size:19px; margin:0 0 14px;">O que foi entregue</h2>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ scopeItems }}" as="item" hint-placeholder-count="4">
+            <div style="display:flex; gap:12px; align-items:flex-start; padding:14px 16px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:10px;">
+              <div style="width:18px; height:18px; border-radius:50%; background:oklch(0.94 0.03 190); color:oklch(0.4 0.1 190); font-size:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">ok</div>
+              <div style="font-size:15px; line-height:1.55;">{{ item }}</div>
             </div>
-            <div style="font-size:20px; color:oklch(0.75 0.01 85); flex-shrink:0;">x</div>
-            <div style="display:flex; align-items:center; gap:16px; flex-direction:row-reverse; text-align:right; flex-shrink:0;">
-              <image-slot id="brevia-logo" src="assets/brevia-logo.png" style="width:52px; height:52px; flex-shrink:0;" shape="rounded" radius="12" fit="contain" placeholder="Logo Brevia"></image-slot>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="margin-bottom:40px;">
+        <h2 style="font-family:Georgia, serif; font-weight:400; font-size:19px; margin:0 0 14px;">Garantia e observacoes</h2>
+        <div style="padding:20px; background:oklch(0.965 0.008 85); border-radius:10px; font-size:14px; line-height:1.65; color:oklch(0.38 0.015 85);">{{ guaranteeText }}</div>
+      </section>
+
+      <section style="background:oklch(0.19 0.012 260); border-radius:16px; padding:36px; color:oklch(0.96 0.005 260);">
+        <sc-if value="{{ isPending }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ showForm }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:bv-fade-in 0.2s ease;">
+              <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:6px;">Registrar aprovacao</div>
+              <div style="font-size:13px; color:oklch(0.75 0.01 260); margin-bottom:20px;">Confirme quem esta aprovando esta entrega em nome de {{ clientName }}.</div>
+              <form onSubmit="{{ onSubmit }}" style="display:flex; flex-direction:column; gap:12px;">
+                <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.78 0.01 260);">
+                  Nome de quem aprova *
+                  <input type="text" value="{{ name }}" onChange="{{ onNameChange }}" placeholder="Ex: Marina Costa" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif;" />
+                </label>
+                <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.78 0.01 260);">
+                  Cargo / empresa (opcional)
+                  <input type="text" value="{{ role }}" onChange="{{ onRoleChange }}" placeholder="Ex: Diretora Financeira" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif;" />
+                </label>
+                <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.78 0.01 260);">
+                  Comentario (opcional)
+                  <textarea value="{{ comment }}" onChange="{{ onCommentChange }}" placeholder="Alguma observacao sobre a aprovacao" rows="2" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif; resize:vertical;"></textarea>
+                </label>
+                <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px; color:oklch(0.75 0.18 25);">{{ error }}</div>
+                </sc-if>
+                <div style="display:flex; gap:10px; margin-top:6px;">
+                  <button type="button" onClick="{{ onCloseForm }}" style="padding:10px 18px; border-radius:8px; border:1px solid oklch(0.4 0.01 260); background:transparent; color:oklch(0.85 0.01 260); font-size:14px; cursor:pointer;">Cancelar</button>
+                  <button type="submit" disabled="{{ submitting }}" style="padding:10px 18px; border-radius:8px; border:none; background:oklch(0.96 0.005 260); color:oklch(0.19 0.012 260); font-size:14px; font-weight:600; cursor:pointer;">{{ submitLabel }}</button>
+                </div>
+              </form>
+            </div>
+          </sc-if>
+          <sc-if value="{{ !showForm }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
               <div>
-                <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:oklch(0.55 0.015 85); margin-bottom:4px;">Entregue por</div>
-                <div style="font-family:Georgia, serif; font-size:19px;">Brevia</div>
+                <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:6px;">Aguardando aprovacao</div>
+                <div style="font-size:13px; color:oklch(0.75 0.01 260); max-width:420px; line-height:1.5;">Ao aprovar, voce confirma o recebimento e conformidade do que esta descrito nesta pagina.</div>
               </div>
+              <button onClick="{{ onOpenForm }}" style="padding:13px 22px; border-radius:9px; border:none; background:oklch(0.96 0.005 260); color:oklch(0.19 0.012 260); font-size:15px; font-weight:600; cursor:pointer; white-space:nowrap;">Aprovar entrega</button>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ isApproved }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; gap:16px; align-items:flex-start; animation:bv-fade-in 0.2s ease;">
+            <div style="width:36px; height:36px; border-radius:50%; background:oklch(0.6 0.14 160); color:oklch(0.19 0.012 260); font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">ok</div>
+            <div>
+              <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:4px;">Entrega aprovada</div>
+              <div style="font-size:14px; color:oklch(0.85 0.005 260); margin-bottom:2px;">{{ approvedBy }}<sc-if value="{{ approverRole }}" hint-placeholder-val="{{ false }}"> - {{ approverRole }}</sc-if></div>
+              <div style="font-size:13px; color:oklch(0.68 0.01 260);">em {{ approvedAtFormatted }}</div>
+              <sc-if value="{{ approverComment }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:12px; padding:12px 14px; background:oklch(0.24 0.012 260); border-radius:8px; font-size:13px; line-height:1.5; color:oklch(0.85 0.005 260);">"{{ approverComment }}"</div>
+              </sc-if>
             </div>
           </div>
+        </sc-if>
+      </section>
 
-          <div style="margin-bottom:44px;">
-            <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Confirmacao de Entrega</div>
-            <h1 style="font-family:Georgia, serif; font-weight:400; font-size:38px; line-height:1.2; margin:0 0 16px;">{{ projectTitle }}</h1>
-            <sc-if value="{{ description }}" hint-placeholder-val="{{ false }}">
-              <p style="font-size:15px; line-height:1.6; color:oklch(0.42 0.015 85); margin:0 0 24px; max-width:640px;">{{ description }}</p>
-            </sc-if>
-            <sc-if value="{{ hasStats }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex; flex-wrap:wrap; gap:12px;">
-                <sc-for list="{{ statItems }}" as="stat" hint-placeholder-count="3">
-                  <div style="flex:1; min-width:140px; padding:14px 16px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:10px;">
-                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:oklch(0.55 0.015 85); margin-bottom:6px;">{{ stat.label }}</div>
-                    <div style="font-family:Georgia, serif; font-size:18px;">{{ stat.value }}</div>
-                    <sc-if value="{{ stat.sub }}" hint-placeholder-val="{{ false }}">
-                      <div style="font-size:12px; color:oklch(0.55 0.015 85); margin-top:2px;">{{ stat.sub }}</div>
-                    </sc-if>
-                  </div>
-                </sc-for>
-              </div>
-            </sc-if>
-          </div>
-
-          <section style="margin-bottom:32px;">
-            <h2 style="font-family:Georgia, serif; font-weight:400; font-size:19px; margin:0 0 14px;">O que foi entregue</h2>
-            <div style="display:flex; flex-direction:column; gap:10px;">
-              <sc-for list="{{ scopeItems }}" as="item" hint-placeholder-count="4">
-                <div style="display:flex; gap:12px; align-items:flex-start; padding:14px 16px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:10px;">
-                  <div style="width:18px; height:18px; border-radius:50%; background:oklch(0.94 0.03 190); color:oklch(0.4 0.1 190); font-size:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">ok</div>
-                  <div style="font-size:15px; line-height:1.55;">{{ item }}</div>
-                </div>
-              </sc-for>
-            </div>
-          </section>
-
-          <section style="margin-bottom:40px;">
-            <h2 style="font-family:Georgia, serif; font-weight:400; font-size:19px; margin:0 0 14px;">Garantia e observacoes</h2>
-            <div style="padding:20px; background:oklch(0.965 0.008 85); border-radius:10px; font-size:14px; line-height:1.65; color:oklch(0.38 0.015 85);">{{ guaranteeText }}</div>
-          </section>
-
-          <section style="background:oklch(0.19 0.012 260); border-radius:16px; padding:36px; color:oklch(0.96 0.005 260);">
-            <sc-if value="{{ isPending }}" hint-placeholder-val="{{ true }}">
-              <sc-if value="{{ showForm }}" hint-placeholder-val="{{ false }}">
-                <div style="animation:bv-fade-in 0.2s ease;">
-                  <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:6px;">Registrar aprovacao</div>
-                  <div style="font-size:13px; color:oklch(0.75 0.01 260); margin-bottom:20px;">Confirme quem esta aprovando esta entrega em nome de {{ clientName }}.</div>
-                  <form onSubmit="{{ onSubmit }}" style="display:flex; flex-direction:column; gap:12px;">
-                    <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.78 0.01 260);">
-                      Nome de quem aprova *
-                      <input type="text" value="{{ name }}" onChange="{{ onNameChange }}" placeholder="Ex: Marina Costa" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif;" />
-                    </label>
-                    <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.78 0.01 260);">
-                      Cargo / empresa (opcional)
-                      <input type="text" value="{{ role }}" onChange="{{ onRoleChange }}" placeholder="Ex: Diretora Financeira" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif;" />
-                    </label>
-                    <label style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:oklch(0.78 0.01 260);">
-                      Comentario (opcional)
-                      <textarea value="{{ comment }}" onChange="{{ onCommentChange }}" placeholder="Alguma observacao sobre a aprovacao" rows="2" style="padding:10px 12px; border-radius:8px; border:1px solid oklch(0.35 0.01 260); background:oklch(0.24 0.012 260); color:#fff; font-size:14px; font-family:Helvetica, Arial, sans-serif; resize:vertical;"></textarea>
-                    </label>
-                    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
-                      <div style="font-size:12px; color:oklch(0.75 0.18 25);">{{ error }}</div>
-                    </sc-if>
-                    <div style="display:flex; gap:10px; margin-top:6px;">
-                      <button type="button" onClick="{{ onCloseForm }}" style="padding:10px 18px; border-radius:8px; border:1px solid oklch(0.4 0.01 260); background:transparent; color:oklch(0.85 0.01 260); font-size:14px; cursor:pointer;">Cancelar</button>
-                      <button type="submit" disabled="{{ submitting }}" style="padding:10px 18px; border-radius:8px; border:none; background:oklch(0.96 0.005 260); color:oklch(0.19 0.012 260); font-size:14px; font-weight:600; cursor:pointer;">{{ submitLabel }}</button>
-                    </div>
-                  </form>
-                </div>
-              </sc-if>
-              <sc-if value="{{ !showForm }}" hint-placeholder-val="{{ true }}">
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
-                  <div>
-                    <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:6px;">Aguardando aprovacao</div>
-                    <div style="font-size:13px; color:oklch(0.75 0.01 260); max-width:420px; line-height:1.5;">Ao aprovar, voce confirma o recebimento e conformidade do que esta descrito nesta pagina.</div>
-                  </div>
-                  <button onClick="{{ onOpenForm }}" style="padding:13px 22px; border-radius:9px; border:none; background:oklch(0.96 0.005 260); color:oklch(0.19 0.012 260); font-size:15px; font-weight:600; cursor:pointer; white-space:nowrap;">Aprovar entrega</button>
-                </div>
-              </sc-if>
-            </sc-if>
-
-            <sc-if value="{{ isApproved }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex; gap:16px; align-items:flex-start; animation:bv-fade-in 0.2s ease;">
-                <div style="width:36px; height:36px; border-radius:50%; background:oklch(0.6 0.14 160); color:oklch(0.19 0.012 260); font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">ok</div>
-                <div>
-                  <div style="font-family:Georgia, serif; font-size:20px; margin-bottom:4px;">Entrega aprovada</div>
-                  <div style="font-size:14px; color:oklch(0.85 0.005 260); margin-bottom:2px;">{{ approvedBy }}<sc-if value="{{ approverRole }}" hint-placeholder-val="{{ false }}"> - {{ approverRole }}</sc-if></div>
-                  <div style="font-size:13px; color:oklch(0.68 0.01 260);">em {{ approvedAtFormatted }}</div>
-                  <sc-if value="{{ approverComment }}" hint-placeholder-val="{{ false }}">
-                    <div style="margin-top:12px; padding:12px 14px; background:oklch(0.24 0.012 260); border-radius:8px; font-size:13px; line-height:1.5; color:oklch(0.85 0.005 260);">"{{ approverComment }}"</div>
-                  </sc-if>
-                </div>
-              </div>
-            </sc-if>
-          </section>
-
-          <div style="text-align:center; margin-top:28px; font-size:11px; color:oklch(0.6 0.01 85);">ID da entrega: {{ currentId }}</div>
-        </div>
-      </sc-if>
+      <div style="text-align:center; margin-top:28px; font-size:11px; color:oklch(0.6 0.01 85);">ID da entrega: {{ currentId }}</div>
     </div>
   </sc-if>
 </div>
@@ -185,11 +151,6 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;deliveryId&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;clube-rincao-migracao-2026&quot;, &quot;tsType&quot;: &quot;string&quot;}}">
 class Component extends DCLogic {
   state = {
-    authChecked: false,
-    isAuthenticated: false,
-    username: "",
-    password: "",
-    authError: null,
     loading: true,
     delivery: null,
     currentId: null,
@@ -203,13 +164,9 @@ class Component extends DCLogic {
 
   async componentDidMount() {
     this.dataApi = await import("./data.js");
-    const isAuthenticated = window.sessionStorage.getItem("brevia-auth") === "ok";
-    this.setState({ authChecked: true, isAuthenticated });
-    if (isAuthenticated) {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id") || this.props.deliveryId || "clube-rincao-migracao-2026";
-      await this.loadDelivery(id);
-    }
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id") || this.props.deliveryId || "clube-rincao-migracao-2026";
+    await this.loadDelivery(id);
   }
 
   async loadDelivery(id) {
@@ -217,49 +174,6 @@ class Component extends DCLogic {
     const d = await this.dataApi.getDelivery(id);
     this.setState({ delivery: d, loading: false });
   }
-
-  setUsername = (e) => this.setState({ username: e.target.value, authError: null });
-  setPassword = (e) => this.setState({ password: e.target.value, authError: null });
-
-  login = async (e) => {
-    e.preventDefault();
-    const username = this.state.username.trim();
-    const password = this.state.password;
-    if (username === "adminbrevia" && password === "brevia123") {
-      window.sessionStorage.setItem("brevia-auth", "ok");
-      this.setState({
-        isAuthenticated: true,
-        authError: null,
-        username: "",
-        password: "",
-        loading: true
-      });
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id") || this.props.deliveryId || "clube-rincao-migracao-2026";
-      await this.loadDelivery(id);
-      return;
-    }
-    this.setState({ authError: "Login ou senha incorretos." });
-  };
-
-  logout = () => {
-    window.sessionStorage.removeItem("brevia-auth");
-    this.setState({
-      isAuthenticated: false,
-      username: "",
-      password: "",
-      authError: null,
-      loading: true,
-      delivery: null,
-      currentId: null,
-      showForm: false,
-      name: "",
-      role: "",
-      comment: "",
-      submitting: false,
-      error: null
-    });
-  };
 
   openForm = () => this.setState({ showForm: true, error: null });
   closeForm = () => this.setState({ showForm: false, name: "", role: "", comment: "", error: null });
@@ -306,12 +220,6 @@ class Component extends DCLogic {
     const { loading, delivery, currentId, showForm, name, role, comment, submitting, error } = this.state;
     const statItems = delivery ? this.buildStats(delivery) : [];
     return {
-      authChecked: this.state.authChecked,
-      showLogin: this.state.authChecked && !this.state.isAuthenticated,
-      showPage: this.state.authChecked && this.state.isAuthenticated,
-      username: this.state.username,
-      password: this.state.password,
-      authError: this.state.authError,
       loading,
       notFound: !loading && !delivery,
       ready: !loading && !!delivery,
@@ -337,10 +245,6 @@ class Component extends DCLogic {
       submitting,
       submitLabel: submitting ? "Registrando..." : "Confirmar aprovacao",
       error,
-      onUsernameChange: this.setUsername,
-      onPasswordChange: this.setPassword,
-      onLoginSubmit: this.login,
-      onLogout: this.logout,
       onOpenForm: this.openForm,
       onCloseForm: this.closeForm,
       onNameChange: this.setName,
