@@ -23,7 +23,7 @@
     <div style="max-width:420px; margin:0 auto; padding:120px 24px; text-align:center; color:oklch(0.55 0.015 85); font-size:14px;">Carregando...</div>
   </sc-if>
 
-  <sc-if value="{{ authChecked && !isAuthenticated }}" hint-placeholder-val="{{ false }}">
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
     <div style="max-width:420px; margin:0 auto; padding:72px 24px 96px;">
       <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Brevia</div>
       <h1 style="font-family:Georgia, serif; font-weight:400; font-size:34px; margin:0 0 14px;">Acesso restrito</h1>
@@ -45,7 +45,7 @@
     </div>
   </sc-if>
 
-  <sc-if value="{{ authChecked && isAuthenticated }}" hint-placeholder-val="{{ false }}">
+  <sc-if value="{{ showPage }}" hint-placeholder-val="{{ false }}">
     <div style="max-width:760px; margin:0 auto; padding:24px 24px 96px;">
       <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:20px;">
         <button onClick="{{ onLogout }}" style="padding:10px 16px; border-radius:999px; border:1px solid oklch(0.88 0.008 85); background:#fff; color:oklch(0.4 0.015 85); font-size:13px; cursor:pointer;">Sair</button>
@@ -85,7 +85,20 @@
             <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Confirmacao de Entrega</div>
             <h1 style="font-family:Georgia, serif; font-weight:400; font-size:38px; line-height:1.2; margin:0 0 16px;">{{ projectTitle }}</h1>
             <sc-if value="{{ description }}" hint-placeholder-val="{{ false }}">
-              <p style="font-size:15px; line-height:1.6; color:oklch(0.42 0.015 85); margin:0; max-width:640px;">{{ description }}</p>
+              <p style="font-size:15px; line-height:1.6; color:oklch(0.42 0.015 85); margin:0 0 24px; max-width:640px;">{{ description }}</p>
+            </sc-if>
+            <sc-if value="{{ hasStats }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                <sc-for list="{{ statItems }}" as="stat" hint-placeholder-count="3">
+                  <div style="flex:1; min-width:140px; padding:14px 16px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:10px;">
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:oklch(0.55 0.015 85); margin-bottom:6px;">{{ stat.label }}</div>
+                    <div style="font-family:Georgia, serif; font-size:18px;">{{ stat.value }}</div>
+                    <sc-if value="{{ stat.sub }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size:12px; color:oklch(0.55 0.015 85); margin-top:2px;">{{ stat.sub }}</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
             </sc-if>
           </div>
 
@@ -281,11 +294,21 @@ class Component extends DCLogic {
     return `${datePart} as ${timePart}`;
   }
 
+  buildStats(d) {
+    const stats = [];
+    if (d.deadline) stats.push({ label: "Prazo de entrega", value: d.deadline });
+    if (d.effortHours) stats.push({ label: "Esforco estimado", value: d.effortHours, sub: d.hourlyRate ? `${d.hourlyRate} / hora tecnica` : "" });
+    if (d.totalValue) stats.push({ label: "Investimento total", value: d.totalValue, sub: d.paymentTerms || "" });
+    return stats;
+  }
+
   renderVals() {
     const { loading, delivery, currentId, showForm, name, role, comment, submitting, error } = this.state;
+    const statItems = delivery ? this.buildStats(delivery) : [];
     return {
       authChecked: this.state.authChecked,
-      isAuthenticated: this.state.isAuthenticated,
+      showLogin: this.state.authChecked && !this.state.isAuthenticated,
+      showPage: this.state.authChecked && this.state.isAuthenticated,
       username: this.state.username,
       password: this.state.password,
       authError: this.state.authError,
@@ -299,6 +322,8 @@ class Component extends DCLogic {
       description: delivery ? delivery.description || "" : "",
       scopeItems: delivery ? delivery.scopeItems : [],
       guaranteeText: delivery ? delivery.guaranteeText : "",
+      statItems,
+      hasStats: statItems.length > 0,
       isPending: !!delivery && delivery.status === "pending",
       isApproved: !!delivery && delivery.status === "approved",
       approvedBy: delivery ? delivery.approvedBy : "",

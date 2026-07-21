@@ -19,7 +19,7 @@
     <div style="max-width:420px; margin:0 auto; padding:120px 24px; text-align:center; color:oklch(0.55 0.015 85); font-size:14px;">Carregando...</div>
   </sc-if>
 
-  <sc-if value="{{ authChecked && !isAuthenticated }}" hint-placeholder-val="{{ false }}">
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
     <div style="max-width:420px; margin:0 auto; padding:72px 24px 96px;">
       <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:oklch(0.55 0.015 85); margin-bottom:10px;">Brevia</div>
       <h1 style="font-family:Georgia, serif; font-weight:400; font-size:34px; margin:0 0 14px;">Acesso restrito</h1>
@@ -41,7 +41,7 @@
     </div>
   </sc-if>
 
-  <sc-if value="{{ authChecked && isAuthenticated }}" hint-placeholder-val="{{ false }}">
+  <sc-if value="{{ showPanel }}" hint-placeholder-val="{{ false }}">
     <div style="max-width:760px; margin:0 auto; padding:64px 24px 96px;">
       <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:40px; flex-wrap:wrap;">
         <div>
@@ -55,23 +55,19 @@
         <div style="color:oklch(0.55 0.015 85); font-size:14px;">Carregando...</div>
       </sc-if>
 
-      <sc-if value="{{ !loading }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <sc-for list="{{ deliveries }}" as="d" hint-placeholder-count="1">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:18px; padding:20px 22px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:12px; flex-wrap:wrap;">
-              <a href="{{ d.href }}" style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex:1 1 320px; min-width:260px; text-decoration:none; color:inherit;">
-                <div style="min-width:0;">
-                  <div style="font-size:12px; color:oklch(0.55 0.015 85); margin-bottom:4px;">{{ d.clientName }}</div>
-                  <div style="font-family:Georgia, serif; font-size:18px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ d.projectTitle }}</div>
-                </div>
-                <div style="display:flex; align-items:center; gap:14px; flex-shrink:0;">
-                  <span style="font-size:12px; padding:6px 12px; border-radius:999px; background:{{ d.badgeBg }}; color:{{ d.badgeColor }}; white-space:nowrap;">{{ d.badgeLabel }}</span>
-                  <span style="color:oklch(0.7 0.01 85); font-size:16px;">-></span>
-                </div>
-              </a>
-              <button onClick="{{ d.onCopyLink }}" style="padding:10px 14px; border-radius:10px; border:1px solid oklch(0.88 0.008 85); background:oklch(0.99 0.002 85); color:oklch(0.35 0.015 85); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap;">{{ d.copyLabel }}</button>
+      <sc-if value="{{ showCard }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:18px; padding:20px 22px; background:#fff; border:1px solid oklch(0.9 0.008 85); border-radius:12px; flex-wrap:wrap;">
+          <a href="{{ deliveryHref }}" style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex:1 1 320px; min-width:260px; text-decoration:none; color:inherit;">
+            <div style="min-width:0;">
+              <div style="font-size:12px; color:oklch(0.55 0.015 85); margin-bottom:4px;">{{ clientName }}</div>
+              <div style="font-family:Georgia, serif; font-size:18px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ projectTitle }}</div>
             </div>
-          </sc-for>
+            <div style="display:flex; align-items:center; gap:14px; flex-shrink:0;">
+              <span style="font-size:12px; padding:6px 12px; border-radius:999px; background:{{ badgeBg }}; color:{{ badgeColor }}; white-space:nowrap;">{{ badgeLabel }}</span>
+              <span style="color:oklch(0.7 0.01 85); font-size:16px;">-></span>
+            </div>
+          </a>
+          <button onClick="{{ onCopyLink }}" style="padding:10px 14px; border-radius:10px; border:1px solid oklch(0.88 0.008 85); background:oklch(0.99 0.002 85); color:oklch(0.35 0.015 85); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap;">{{ copyLabel }}</button>
         </div>
       </sc-if>
     </div>
@@ -88,21 +84,21 @@ class Component extends DCLogic {
     password: "",
     authError: null,
     loading: true,
-    deliveries: [],
-    copiedId: null
+    delivery: null,
+    copied: false
   };
 
   async componentDidMount() {
-    const { listDeliveries } = await import("./data.js");
-    this.listDeliveries = listDeliveries;
+    const { getDelivery } = await import("./data.js");
+    this.getDelivery = getDelivery;
     const isAuthenticated = window.sessionStorage.getItem("brevia-auth") === "ok";
     this.setState({ authChecked: true, isAuthenticated });
-    if (isAuthenticated) await this.loadDeliveries();
+    if (isAuthenticated) await this.loadDelivery();
   }
 
-  async loadDeliveries() {
-    const list = await this.listDeliveries();
-    this.setState({ loading: false, deliveries: list });
+  async loadDelivery() {
+    const delivery = await this.getDelivery("clube-rincao-migracao-2026");
+    this.setState({ loading: false, delivery });
   }
 
   setUsername = (e) => this.setState({ username: e.target.value, authError: null });
@@ -121,7 +117,7 @@ class Component extends DCLogic {
         password: "",
         loading: true
       });
-      await this.loadDeliveries();
+      await this.loadDelivery();
       return;
     }
     this.setState({ authError: "Login ou senha incorretos." });
@@ -135,34 +131,35 @@ class Component extends DCLogic {
       password: "",
       authError: null,
       loading: true,
-      deliveries: [],
-      copiedId: null
+      delivery: null,
+      copied: false
     });
   };
 
-  buildDeliveryUrl(id) {
+  buildDeliveryUrl() {
     const url = new URL("delivery.html", window.location.href);
-    url.searchParams.set("id", id);
+    url.searchParams.set("id", "clube-rincao-migracao-2026");
     return url.toString();
   }
 
-  copyLink = async (id) => {
-    const link = this.buildDeliveryUrl(id);
+  copyLink = async () => {
+    const link = this.buildDeliveryUrl();
     try {
       await navigator.clipboard.writeText(link);
-      this.setState({ copiedId: id });
-      window.setTimeout(() => {
-        if (this.state.copiedId === id) this.setState({ copiedId: null });
-      }, 2000);
+      this.setState({ copied: true });
+      window.setTimeout(() => this.setState({ copied: false }), 2000);
     } catch (err) {
       window.prompt("Copie este link:", link);
     }
   };
 
   renderVals() {
+    const d = this.state.delivery;
+    const isApproved = !!d && d.status === "approved";
     return {
       authChecked: this.state.authChecked,
-      isAuthenticated: this.state.isAuthenticated,
+      showLogin: this.state.authChecked && !this.state.isAuthenticated,
+      showPanel: this.state.authChecked && this.state.isAuthenticated,
       username: this.state.username,
       password: this.state.password,
       authError: this.state.authError,
@@ -171,16 +168,15 @@ class Component extends DCLogic {
       onLoginSubmit: this.login,
       onLogout: this.logout,
       loading: this.state.loading,
-      deliveries: this.state.deliveries.map((d) => ({
-        clientName: d.clientName,
-        projectTitle: d.projectTitle,
-        href: this.buildDeliveryUrl(d.id),
-        badgeLabel: d.status === "approved" ? "Aprovado" : "Pendente",
-        badgeBg: d.status === "approved" ? "oklch(0.92 0.05 160)" : "oklch(0.94 0.03 60)",
-        badgeColor: d.status === "approved" ? "oklch(0.4 0.1 160)" : "oklch(0.42 0.1 60)",
-        copyLabel: this.state.copiedId === d.id ? "Link copiado" : "Copy link",
-        onCopyLink: () => this.copyLink(d.id)
-      }))
+      showCard: !this.state.loading && !!d,
+      clientName: d ? d.clientName : "",
+      projectTitle: d ? d.projectTitle : "",
+      deliveryHref: this.buildDeliveryUrl(),
+      badgeLabel: isApproved ? "Aprovado" : "Pendente",
+      badgeBg: isApproved ? "oklch(0.92 0.05 160)" : "oklch(0.94 0.03 60)",
+      badgeColor: isApproved ? "oklch(0.4 0.1 160)" : "oklch(0.42 0.1 60)",
+      copyLabel: this.state.copied ? "Link copiado" : "Copy link",
+      onCopyLink: this.copyLink
     };
   }
 }

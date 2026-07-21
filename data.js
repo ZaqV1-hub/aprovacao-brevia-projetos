@@ -17,6 +17,11 @@ const _mockDb = {
     ],
     guaranteeText:
       "A Brevia garante que, apos a migracao, nao ocorrerao quedas do site, indisponibilidades ou bugs decorrentes de sistemas nao devidamente conectados ao novo ambiente. Qualquer instabilidade relacionada a migracao sera corrigida sem custo adicional para o Clube Rincao.",
+    deadline: "21/07 as 18h",
+    effortHours: "40h",
+    hourlyRate: "R$ 180",
+    totalValue: "R$ 7.200,00",
+    paymentTerms: "50% na aprovacao · 50% na entrega",
     status: "pending",
     approvedBy: null,
     approverRole: null,
