@@ -1,6 +1,29 @@
-// Camada de dados mock para a entrega publicada.
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  runTransaction,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-const _mockDb = {
+const firebaseConfig = {
+  apiKey: "AIzaSyC2QlR1k0fHkCabF3o0iXF433tIm0m0s1Y",
+  authDomain: "breviaprojects.firebaseapp.com",
+  projectId: "breviaprojects",
+  storageBucket: "breviaprojects.firebasestorage.app",
+  messagingSenderId: "109697673902",
+  appId: "1:109697673902:web:f23943ae5082ec10c3db3f",
+  measurementId: "G-L2XX3V29KC"
+};
+
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const deliveriesCollection = collection(db, "deliveries");
+
+const deliveryTemplates = {
   "clube-rincao-migracao-2026": {
     id: "clube-rincao-migracao-2026",
     clientName: "Clube Rincão",
@@ -30,37 +53,97 @@ const _mockDb = {
   }
 };
 
-const LATENCY = 250;
-const delay = (v) => new Promise((res) => setTimeout(() => res(v), LATENCY));
+function deliveryRef(id) {
+  return doc(deliveriesCollection, id);
+}
+
+function cloneTemplate(id) {
+  const template = deliveryTemplates[id];
+  if (!template) throw new Error("Entrega não cadastrada: " + id);
+  return JSON.parse(JSON.stringify(template));
+}
+
+function toIsoString(value) {
+  if (!value) return null;
+  if (typeof value === "string") return value;
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value.toDate === "function") return value.toDate().toISOString();
+  return null;
+}
+
+function normalizeDelivery(id, raw) {
+  const base = cloneTemplate(id);
+  const merged = { ...base, ...(raw || {}) };
+  merged.scopeItems = Array.isArray(merged.scopeItems) ? merged.scopeItems : base.scopeItems;
+  merged.approvedAt = toIsoString(merged.approvedAt);
+  merged.status = merged.status === "approved" ? "approved" : "pending";
+  merged.approvedBy = merged.approvedBy || null;
+  merged.approverRole = merged.approverRole || null;
+  merged.approverComment = merged.approverComment || null;
+  return merged;
+}
+
+async function ensureDelivery(id) {
+  const ref = deliveryRef(id);
+  const snapshot = await getDoc(ref);
+  if (snapshot.exists()) return normalizeDelivery(id, snapshot.data());
+
+  const initial = cloneTemplate(id);
+  await setDoc(ref, initial);
+  return initial;
+}
 
 export async function getDelivery(id) {
-  const d = _mockDb[id];
-  return delay(d ? { ...d } : null);
+  return ensureDelivery(id);
 }
 
 export async function getApprovalStatus(id) {
-  const d = _mockDb[id];
-  if (!d) return delay(null);
-  return delay({
-    status: d.status,
-    approvedBy: d.approvedBy,
-    approverRole: d.approverRole,
-    approverComment: d.approverComment,
-    approvedAt: d.approvedAt
-  });
+  const delivery = await ensureDelivery(id);
+  return {
+    status: delivery.status,
+    approvedBy: delivery.approvedBy,
+    approverRole: delivery.approverRole,
+    approverComment: delivery.approverComment,
+    approvedAt: delivery.approvedAt
+  };
 }
 
 export async function approveDelivery(id, { name, role, comment }) {
-  const d = _mockDb[id];
-  if (!d) throw new Error("Entrega não encontrada: " + id);
-  d.status = "approved";
-  d.approvedBy = name;
-  d.approverRole = role || null;
-  d.approverComment = comment || null;
-  d.approvedAt = new Date().toISOString();
-  return delay({ ...d });
+  const ref = deliveryRef(id);
+
+  await runTransaction(db, async (transaction) => {
+    const snapshot = await transaction.get(ref);
+    const current = snapshot.exists()
+      ? normalizeDelivery(id, snapshot.data())
+      : cloneTemplate(id);
+
+    if (current.status === "approved") return;
+
+    transaction.set(
+      ref,
+      {
+        ...current,
+        status: "approved",
+        approvedBy: name,
+        approverRole: role || null,
+        approverComment: comment || null,
+        approvedAt: new Date().toISOString()
+      },
+      { merge: false }
+    );
+  });
+
+  return getDelivery(id);
 }
 
 export async function listDeliveries() {
-  return delay(Object.values(_mockDb).map((d) => ({ ...d })));
+  const snapshots = await getDocs(deliveriesCollection);
+  const items = snapshots.docs
+    .map((entry) => normalizeDelivery(entry.id, entry.data()))
+    .filter((entry) => !!deliveryTemplates[entry.id]);
+
+  if (items.length > 0) return items;
+
+  const firstId = Object.keys(deliveryTemplates)[0];
+  return [await ensureDelivery(firstId)];
 }
